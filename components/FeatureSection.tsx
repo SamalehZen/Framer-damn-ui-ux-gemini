@@ -3,16 +3,45 @@ import { ArrowRight } from 'lucide-react';
 import AvatarStack from './AvatarStack';
 
 const FeatureSection: React.FC = () => {
-  return (
-    <div className="relative w-full min-h-[130vh] bg-black text-white rounded-t-[3rem] md:rounded-t-[4rem] -mt-10 z-10 overflow-hidden pb-40">
-      {/* Sticky Header Container - Appear after scrolling a bit or stick to top of this section */}
-      <div className="sticky top-6 z-40 w-full flex justify-center px-4 pt-4 md:pt-6">
-        <StickyNav />
-      </div>
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
-      {/* Main Content */}
-      <div className="flex flex-col items-center justify-center pt-24 md:pt-32 px-6 md:px-10 max-w-[90rem] mx-auto">
-        <ScrollRevealText />
+  useEffect(() => {
+    const handleScroll = () => {
+      if (sectionRef.current) {
+        const rect = sectionRef.current.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        
+        // Define the scroll range for the animation
+        // Start: When the section top is 20% down from viewport top (entering focus)
+        // End: When the section top is 150% viewport height above viewport top (scrolled far past)
+        const startThreshold = viewportHeight * 0.2;
+        const endThreshold = -viewportHeight * 1.5;
+        
+        const progress = (startThreshold - rect.top) / (startThreshold - endThreshold);
+        
+        setScrollProgress(Math.max(0, Math.min(1, progress)));
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <div ref={sectionRef} className="relative w-full h-[300vh] bg-black text-white rounded-t-[3rem] md:rounded-t-[4rem] -mt-10 z-10">
+      <div className="sticky top-0 h-screen w-full flex flex-col overflow-hidden">
+        
+        {/* Header Area */}
+        <div className="w-full flex justify-center pt-8 md:pt-10 z-20">
+          <StickyNav />
+        </div>
+
+        {/* Main Text Area - Centered in the sticky view */}
+        <div className="flex-1 flex flex-col items-center justify-center px-6 md:px-10 max-w-[90rem] mx-auto -mt-20 md:mt-0">
+          <ScrollRevealText progress={scrollProgress} />
+        </div>
       </div>
     </div>
   );
@@ -20,7 +49,7 @@ const FeatureSection: React.FC = () => {
 
 const StickyNav: React.FC = () => {
   return (
-    <div className="flex items-center gap-2 p-1.5 pr-2 bg-[#787878]/30 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl max-w-full md:max-w-fit overflow-x-auto no-scrollbar">
+    <div className="flex items-center gap-2 p-1.5 pr-2 bg-[#787878]/30 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl max-w-full md:max-w-fit overflow-x-auto no-scrollbar mx-4">
       
       {/* Yellow Brand Pill */}
       <div className="flex flex-col justify-center bg-[#D1D857] text-black px-5 py-1.5 rounded-full min-w-[110px] cursor-pointer hover:brightness-110 transition-all h-[56px] relative overflow-hidden group">
@@ -72,45 +101,26 @@ const StickyNav: React.FC = () => {
   );
 };
 
-const ScrollRevealText: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
+interface ScrollRevealTextProps {
+  progress: number;
+}
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-        // Start revealing when the element is 75% down the screen, finish when it's 25% down
-        const start = windowHeight * 0.85;
-        const end = windowHeight * 0.25;
-        const progress = Math.min(Math.max((start - rect.top) / (start - end), 0), 1);
-        setScrollProgress(progress);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Init
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
+const ScrollRevealText: React.FC<ScrollRevealTextProps> = ({ progress }) => {
   const headline = "Enhance your workflows to maximize performance and take effective control of your time.";
   const subtext = "Focus on what truly matters to your business, while routine tasks run on autopilot with the help of our no-code and code-based solutions.";
 
   return (
-    <div ref={containerRef} className="max-w-6xl w-full text-left md:text-left mt-16 md:mt-20 mb-40 pl-4 md:pl-0">
+    <div className="max-w-6xl w-full text-left md:text-left mb-20 md:mb-0 pl-4 md:pl-0">
       {/* Animated Headline */}
-      {/* Adjusted sizes: text-[2.5rem] mobile, md:text-[4rem] tablet, lg:text-[5.5rem] desktop */}
       <h2 className="text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] leading-[1.05] font-bold tracking-tight mb-12 md:mb-16 transition-colors duration-500 max-w-5xl">
         {headline.split(" ").map((word, i) => {
-           // Simple stagger effect based on scroll progress
            const totalWords = headline.split(" ").length;
            const highlightThreshold = i / totalWords;
-           // Tune the speed so it feels like it's lighting up as you read
-           const isHighlighted = scrollProgress > (highlightThreshold * 0.85); 
+           // Trigger when progress passes the word's position (scaled to 70% of total scroll duration for header)
+           const isHighlighted = progress > (highlightThreshold * 0.7); 
            
            return (
-             <span key={i} className={`inline-block mr-[0.25em] transition-opacity duration-700 ${isHighlighted ? 'text-white opacity-100' : 'text-white/40 opacity-40'}`}>
+             <span key={i} className={`inline-block mr-[0.25em] transition-opacity duration-500 ${isHighlighted ? 'text-white opacity-100' : 'text-white/50 opacity-50'}`}>
                {word}
              </span>
            )
@@ -118,16 +128,16 @@ const ScrollRevealText: React.FC = () => {
       </h2>
 
       {/* Secondary Text */}
-      {/* Adjusted sizes: text-[1.25rem] mobile, md:text-[1.8rem] tablet, lg:text-[2.2rem] desktop */}
       <p className="text-[1.25rem] md:text-[1.8rem] lg:text-[2.2rem] leading-[1.3] font-medium tracking-tight max-w-4xl">
         {subtext.split(" ").map((word, i) => {
            const highlightThreshold = i / subtext.split(" ").length;
-           // Start highlighting this paragraph after the headline is mostly done
-           const adjustedProgress = Math.max(0, scrollProgress - 0.5) * 2.5;
+           // Start highlighting after header is mostly done (progress > 0.6)
+           // Map the remaining 0.4 progress to the paragraph
+           const adjustedProgress = Math.max(0, progress - 0.6) * 2.5; 
            const isHighlighted = adjustedProgress > highlightThreshold;
            
            return (
-            <span key={i} className={`inline-block mr-[0.2em] transition-colors duration-700 ${isHighlighted ? 'text-[#888888]' : 'text-[#222222]'}`}>
+            <span key={i} className={`inline-block mr-[0.2em] transition-colors duration-500 ${isHighlighted ? 'text-[#EEEEEE]' : 'text-[#444444]'}`}>
               {word}
             </span>
            );

@@ -30,7 +30,6 @@ const Hero: React.FC = () => {
         <div className="flex flex-col items-center text-center -space-y-2 md:-space-y-4 w-full">
           
           {/* Row 1: Unlimited [Graphic] Design */}
-          {/* Adjusted font sizes for iPad/Tablet (md) to be slightly smaller than before */}
           <div className="flex flex-wrap items-center justify-center gap-x-3 md:gap-x-5 gap-y-2">
             <h1 className="text-[3.25rem] md:text-[5rem] lg:text-[7rem] font-bold tracking-tighter text-black leading-[0.9] md:leading-[1.05]">
               Unlimited
@@ -72,8 +71,11 @@ const Hero: React.FC = () => {
         {/* Action Area - Row Layout on Desktop */}
         <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 pt-4 md:pt-6">
           
-          {/* CTA Button */}
-          {/* Container matches background (#f2f2f2) but differentiated with border/shadow */}
+          {/* CTA Button with 'Skin' Container Effect (Neumorphism) */}
+          {/* 
+              - bg-[#f2f2f2]: Meme couleur que le background global
+              - shadow-[...]: Ombre claire en haut a gauche, ombre foncée en bas a droite
+          */}
           <div className="p-2 bg-[#f2f2f2] rounded-full border border-gray-200/60 shadow-[4px_4px_10px_rgba(0,0,0,0.05),-4px_-4px_10px_rgba(255,255,255,0.8)]">
              <button className="group relative bg-black text-white pl-8 pr-6 py-4 rounded-full text-[1.05rem] font-medium flex items-center gap-4 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               Choose your plan

@@ -8,6 +8,7 @@ const SuitableForSection: React.FC = () => {
           
           {/* Left Column - Sticky Content */}
           <div className="relative h-auto md:h-auto">
+            {/* position: sticky ensures this text stays visible while scrolling the cards */}
             <div className="md:sticky md:top-0 md:h-screen flex flex-col justify-center py-20 md:py-0">
               <h2 className="text-[2.5rem] md:text-[3.5rem] lg:text-[4.5rem] font-bold tracking-tight leading-[1.1] mb-6">
                 We are suitable for
@@ -21,7 +22,7 @@ const SuitableForSection: React.FC = () => {
           {/* Right Column - Scrolling Cards */}
           <div className="flex flex-col gap-8 md:gap-12 pb-20 md:pb-40">
             
-            {/* Card 1: Small Business */}
+            {/* Card 1: Small Business (White + Venn Diagram) */}
             <div className="bg-white text-black rounded-[2.5rem] p-8 md:p-12 min-h-[600px] flex flex-col justify-between group transition-transform hover:scale-[1.01] duration-500">
               <div>
                 <h3 className="text-[2.5rem] md:text-[3rem] font-medium tracking-tight leading-none">Small business</h3>
@@ -39,7 +40,7 @@ const SuitableForSection: React.FC = () => {
               </div>
             </div>
 
-            {/* Card 2: Active Products */}
+            {/* Card 2: Active Products (Lime Green + Geometric Flower) */}
             <div className="bg-[#D9F327] text-black rounded-[2.5rem] p-8 md:p-12 min-h-[600px] flex flex-col justify-between group transition-transform hover:scale-[1.01] duration-500">
               <div>
                 <h3 className="text-[2.5rem] md:text-[3rem] font-medium tracking-tight leading-none">Active products</h3>
@@ -57,7 +58,7 @@ const SuitableForSection: React.FC = () => {
               </div>
             </div>
 
-            {/* Card 3: Startups */}
+            {/* Card 3: Startups (Dark Grey + Wireframe Tunnel) */}
             <div className="bg-[#1A1A1A] text-white rounded-[2.5rem] p-8 md:p-12 min-h-[600px] flex flex-col justify-between group border border-white/10 transition-transform hover:scale-[1.01] duration-500">
               <div>
                 <h3 className="text-[2.5rem] md:text-[3rem] font-medium tracking-tight leading-none">Startups</h3>
@@ -82,27 +83,30 @@ const SuitableForSection: React.FC = () => {
   );
 };
 
-// SVG Graphics
+// --- SVG Graphics Components ---
 
+// Venn Diagram: Intersecting circles
 const VennGraphic: React.FC = () => (
   <svg width="240" height="240" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-48 h-48 md:w-64 md:h-64 opacity-80">
-    <circle cx="100" cy="75" r="55" stroke="currentColor" strokeWidth="0.6" />
-    <circle cx="70" cy="125" r="55" stroke="currentColor" strokeWidth="0.6" />
-    <circle cx="130" cy="125" r="55" stroke="currentColor" strokeWidth="0.6" />
+    <circle cx="100" cy="75" r="55" stroke="currentColor" strokeWidth="0.8" />
+    <circle cx="70" cy="125" r="55" stroke="currentColor" strokeWidth="0.8" />
+    <circle cx="130" cy="125" r="55" stroke="currentColor" strokeWidth="0.8" />
   </svg>
 );
 
+// Spirograph: Rotated ellipses forming a flower
 const SpirographGraphic: React.FC = () => (
   <svg width="240" height="240" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-48 h-48 md:w-64 md:h-64 animate-[spin_20s_linear_infinite] opacity-80">
     {[0, 30, 60, 90, 120, 150].map((rotation) => (
       <g key={rotation} style={{ transformOrigin: 'center', transform: `rotate(${rotation}deg)` }}>
-         <ellipse cx="100" cy="100" rx="25" ry="75" stroke="currentColor" strokeWidth="0.6" />
+         <ellipse cx="100" cy="100" rx="25" ry="75" stroke="currentColor" strokeWidth="0.8" />
       </g>
     ))}
-    <circle cx="100" cy="100" r="15" stroke="currentColor" strokeWidth="0.6" />
+    <circle cx="100" cy="100" r="15" stroke="currentColor" strokeWidth="0.8" />
   </svg>
 );
 
+// Tunnel: Concentric circles with depth lines
 const TunnelGraphic: React.FC = () => (
   <svg width="240" height="240" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-48 h-48 md:w-64 md:h-64">
     {[...Array(6)].map((_, i) => (
@@ -113,13 +117,13 @@ const TunnelGraphic: React.FC = () => (
         rx={90 - (i * 12)} 
         ry={90 - (i * 12)} 
         stroke="currentColor" 
-        strokeWidth="0.6" 
+        strokeWidth="0.8" 
         opacity={0.3 + (i * 0.1)} 
       />
     ))}
-    {/* Diagonal cross lines for tunnel effect depth */}
-    <path d="M 30 30 L 170 170" stroke="currentColor" strokeWidth="0.4" opacity="0.3" />
-    <path d="M 170 30 L 30 170" stroke="currentColor" strokeWidth="0.4" opacity="0.3" />
+    {/* Diagonal cross lines for tunnel perspective */}
+    <path d="M 30 30 L 170 170" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
+    <path d="M 170 30 L 30 170" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
   </svg>
 );
 
